@@ -16,17 +16,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto createPost(PostDto postDto) {
+       //copies that into entity
         Post post=new Post();
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
+        //then saves
         Post savedPost = postRepository.save(post);
         //we can't return this as we have to return dto
         PostDto dto=new PostDto();
         dto.setTitle(savedPost.getTitle());
         dto.setDescription(savedPost.getDescription());
         dto.setContent(savedPost.getContent());
-
         return dto;
     }
 }
