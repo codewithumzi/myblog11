@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.LineNumberReader;
 import java.util.List;
 
 @RestController
@@ -24,18 +25,19 @@ public class PostController {
         PostDto dto = postService.createPost(postDto);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
-    @GetMapping
+    @GetMapping("/single")
     public ResponseEntity<PostDto>getPostById(@RequestParam long id){
         PostDto dto=postService.getPostById(id);
 
         return new ResponseEntity<>(dto,HttpStatus.OK);
     }
-    @GetMapping("/getAllPosts")
+    @GetMapping//("/getAllPosts")only for getting all posts removed during pagination and sorting
 
-    public List<PostDto>getAllPosts(){
-        List<PostDto>postDtos=postService.getAllPosts();
-        return postDtos;
-
-    }
-
+    public List<PostDto>getAllPosts(
+        @RequestParam(name = "pageNo",required = false,defaultValue = "0") int pageNo,
+        @RequestParam(name = "pageSize",required = false,defaultValue = "5")int pageSize
+                        ){
+            List<PostDto>postDtos=postService.getAllPosts( pageNo,pageSize);
+            return postDtos;
+        }
 }
