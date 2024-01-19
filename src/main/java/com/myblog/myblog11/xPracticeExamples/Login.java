@@ -1,4 +1,5 @@
-package com.myblog.myblog11;
+package com.myblog.myblog11.xPracticeExamples;
+
 //CONVERT OBJECTS TO DTOs  USING STREAM API PART 2
 public class Login {
     private String userName;
