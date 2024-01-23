@@ -3,8 +3,7 @@ package com.myblog.myblog11.xPracticeDebug;
 public class TestClass {
     public static void main(String[] args) {
         TestClass testClass=new TestClass();
-        System.out.println(100);
-        System.out.println(200);
+        System.out.println(80);
         int val = testClass.test();
         System.out.println(val);
     }
