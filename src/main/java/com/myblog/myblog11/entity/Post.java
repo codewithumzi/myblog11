@@ -3,8 +3,10 @@ package com.myblog.myblog11.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+
 @Entity
 @Table(name = "posts")
 @Data
@@ -18,4 +20,12 @@ public class Post {
     private String description;
     private String content;
 
+    @OneToMany(cascade =  CascadeType.ALL,mappedBy = "post")
+    private List<Comment> comments;//=new ArrayList<>();
+
+    // Constructors, getters, setters...
 }
+
+
+
+
