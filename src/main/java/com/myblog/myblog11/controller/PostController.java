@@ -5,6 +5,7 @@ import com.myblog.myblog11.payload.PostDto;
 import com.myblog.myblog11.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.LineNumberReader;
@@ -14,28 +15,29 @@ import java.util.List;
 @RequestMapping("/api/posts")
 public class PostController {
     //http://localhost:8080/api/posts?id=1
-
     private PostService postService;
         //constructor based injection
     public PostController(PostService postService) {
+
         this.postService = postService;
     }
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){
         PostDto dto = postService.createPost(postDto);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
-    @GetMapping("/single")
-    public ResponseEntity<PostDto>getPostById(@RequestParam long id){
+    @GetMapping("/single/{id}")
+    public ResponseEntity<PostDto>getPostById(@PathVariable long id){
         PostDto dto=postService.getPostById(id);
 
         return new ResponseEntity<>(dto,HttpStatus.OK);
     }
-    @GetMapping
+    @GetMapping("/getAllPosts")
     //("/getAllPosts")only for getting all posts removed during pagination and sorting
-    //http://localhost:8080/api/posts?pageNo=0&pageSize=10
-//http://localhost:8080/api/posts?pageNo=0&pageSize=10&sortBy=title
-//http://localhost:8080/api/posts?pageNo=0&pageSize=10&sortBy=id&sortDir=desc
+    //http://localhost:8080/api/posts/getAllPosts?pageNo=0&pageSize=10
+//http://localhost:8080/api/posts/getAllPosts?pageNo=0&pageSize=10&sortBy=title
+//http://localhost:8080/api/posts/getAllPosts?pageNo=0&pageSize=10&sortBy=id&sortDir=desc
 
     public List<PostDto>getAllPosts(
         @RequestParam(name = "pageNo",required = false,defaultValue = "0") int pageNo,
@@ -46,4 +48,20 @@ public class PostController {
             List<PostDto>postDtos=postService.getAllPosts( pageNo,pageSize,sortBy,sortDir);
             return postDtos;
         }
+    //http://localhost:8080/api/posts/5
+        @DeleteMapping("/{id}")
+        public ResponseEntity<String> deletePost(@PathVariable long id){
+        postService.deletePost(id);
+
+        return new ResponseEntity<>("post id is deleted",HttpStatus.OK);
+        }
+    //http://localhost:8080/api/posts/postId=1
+        @PutMapping("/update/{postId}")
+        public ResponseEntity<PostDto> updatePost(
+                @PathVariable("postId") long postId,
+                @RequestBody PostDto postDto
+        ){
+        PostDto dto=postService.updatePost(postId,postDto);
+        return new ResponseEntity<>(dto,HttpStatus.OK);
+    }
 }

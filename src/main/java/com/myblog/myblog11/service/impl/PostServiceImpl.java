@@ -1,10 +1,12 @@
 package com.myblog.myblog11.service.impl;
 
+import com.myblog.myblog11.entity.Comment;
 import com.myblog.myblog11.entity.Post;
 import com.myblog.myblog11.exception.ResourceNotFoundException;
 import com.myblog.myblog11.payload.PostDto;
 import com.myblog.myblog11.repository.PostRepository;
 import com.myblog.myblog11.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +19,13 @@ import java.util.stream.Collectors;
 @Service
 public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
-    public PostServiceImpl(PostRepository postRepository) {
+    private ModelMapper modelMapper;
 
+    public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper) {
         this.postRepository = postRepository;
+        this.modelMapper = modelMapper;
     }
+
     @Override
     public PostDto createPost(PostDto postDto) {
 
@@ -51,19 +56,61 @@ public class PostServiceImpl implements PostService {
         List<PostDto> dtos = posts.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
         return dtos;
     }
-    PostDto mapToDto(Post post){
-        PostDto dto = new PostDto();
-        dto.setId(post.getId());
-        dto.setTitle(post.getTitle());
-        dto.setDescription(post.getDescription());
-        dto.setContent(post.getContent());
-        return dto;
+
+    @Override
+    public void deletePost(long id) {
+        postRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("post not found with id :" +id)
+        );
+        postRepository.deleteById(id);
     }
-    Post mapToEntity(PostDto postDto){
-        Post post=new Post();
+
+    @Override
+    public PostDto updatePost(long postId, PostDto postDto) {
+        // Find the post by ID
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new ResourceNotFoundException("Post not found for Id: " + postId)
+        );
+
+        // Update the post entity with the new data
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
+
+        // Save the updated post
+        Post savedPost = postRepository.save(post);
+
+        // Map the updated post to DTO and return
+        return mapToDto(savedPost);
+    }
+
+    PostDto mapToDto(Post post) {
+        PostDto dto = modelMapper.map(post, PostDto.class);
+        return dto;
+    }
+
+    Post mapToEntity(PostDto postDto) {
+        Post post = modelMapper.map(postDto, Post.class);
         return post;
     }
+
 }
+
+    //mapToDto
+// using modelmapper instead
+//        PostDto dto = new PostDto();
+//        dto.setId(post.getId());
+//        dto.setTitle(post.getTitle());
+//        dto.setDescription(post.getDescription());
+//        dto.setContent(post.getContent());
+//        return dto;
+//        }
+
+//        mapToEntity
+//        using modelmapper instead of this to get rid of boiler plate code
+//        Post post=new Post();
+//        post.setTitle(postDto.getTitle());
+//        post.setDescription(postDto.getDescription());
+//        post.setContent(postDto.getContent());
+//        return post;
+//    }

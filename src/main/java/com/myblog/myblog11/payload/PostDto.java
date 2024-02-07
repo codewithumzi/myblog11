@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostDto {
 
-    //in this payload i should exactly have same names as entity
+    //in this payload i should exactly have same names as post entity class
     private long id;
     private String title;
     private String description;
