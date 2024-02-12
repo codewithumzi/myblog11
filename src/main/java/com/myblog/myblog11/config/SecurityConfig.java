@@ -28,23 +28,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http                                //writing the code in chaining format
                 .csrf().disable()
                 .authorizeRequests()
-               // antMatchers is used to provide access to the url
+    // antMatchers is used to provide access to the url
                 .antMatchers(HttpMethod.GET,"/api/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
+                 .antMatchers(HttpMethod.POST,"/api/auth/signup").permitAll()
+                //.antMatchers(HttpMethod.POST,"/api/auth/signup").hasRole("ROLE_SUPER")
+
                 .anyRequest()
                 .authenticated()
                 .and()
                 .httpBasic();//one of the different type of authentication
     }
- @Override
-    @Bean
-    //this particular method is responsible for storing username and password using builder()
-    protected UserDetailsService userDetailsService(){
-        UserDetails user1 = User.builder().username("pankaj").password(passwordEncoder()
-                .encode("password")).roles("USER").build();
-        UserDetails user2 = User.builder().username("admin").password(passwordEncoder()
-                .encode("admin")).roles("ADMIN").build();
-        return new InMemoryUserDetailsManager(user1,user2);
-        //creating inMemory object where we store username and password
-    }
+// @Override
+//    @Bean
+//    //this particular method is responsible for storing username and password using builder()
+//    protected UserDetailsService userDetailsService(){
+//        UserDetails user1 = User.builder().username("pankaj").password(passwordEncoder()
+//                .encode("password")).roles("USER").build();
+//        UserDetails user2 = User.builder().username("admin").password(passwordEncoder()
+//                .encode("admin")).roles("ADMIN").build();
+//        return new InMemoryUserDetailsManager(user1,user2);
+//        //creating inMemory object where we store username and password
+
 }
+
