@@ -14,11 +14,11 @@ public class loginMain {
                 new Login("shakir", "testing"),
                 new Login("akib", "testing")
         );
-        List<LoginDto> dtos = logins.stream().map(login -> mapToDto(login)).collect(Collectors.toList());
+        List<LoginDtoEx> dtos = logins.stream().map(login -> mapToDto(login)).collect(Collectors.toList());
         System.out.println(dtos);
     }
-     static  LoginDto mapToDto(Login login){
-        LoginDto dto=new LoginDto();
+     static LoginDtoEx mapToDto(Login login){
+        LoginDtoEx dto=new LoginDtoEx();
         dto.setUserName(login.getUsername());
         dto.setPassword(login.getPassword());
         return dto;
